@@ -17,7 +17,7 @@ public:
     const unsigned AnnoMinimo = 1902;
     const unsigned AnnoMaximo = 2037;
 
-    //Constructores SIN IMPLEMENTAR
+    //Constructores
     explicit Fecha( unsigned dia = 0, unsigned mes = 0, unsigned anno = 0);
     Fecha(const Fecha& F);
     Fecha(const char* f);
@@ -27,7 +27,8 @@ public:
     int mes() const;
     int anno() const;
 
-    operator const char*();
+    Fecha operator=(const Fecha& F);
+    const char* cadena() const;
     //Operadores amigos
     friend Fecha operator += (Fecha&, int n);
     friend bool operator == (const Fecha& F, const Fecha& G);
@@ -60,5 +61,7 @@ Fecha operator -(Fecha&, int n);
 bool operator == (const Fecha& F,const Fecha& G);
 bool operator < (const Fecha& F,const Fecha& G);
 bool operator != (const Fecha& F, const Fecha& G);
+std::ostream& operator<<(std::ostream& os,const Fecha& F);
+std::istream& operator>>(std::istream& is, Fecha& F);
 
 #endif

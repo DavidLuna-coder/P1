@@ -1,7 +1,7 @@
 #include "fecha.hpp"
 #include <ctime>
 #include <locale>
-
+#include <iostream>
 //std::locale("es_ES.UTF-8");
 using namespace std;
 time_t now = time(nullptr);
@@ -37,9 +37,7 @@ void Fecha::EstablecerAnno(unsigned anno)
         throw Invalida("ERROR: anno mayor que el maximo establecido");
     }
     else
-    {
         a = anno;
-    }
 }
 
 void Fecha::EstablecerMes(unsigned mes)
@@ -133,14 +131,14 @@ int Fecha::anno() const
 }
 
 //Conversión implicita/explícita
-Fecha::operator const char *()
+const char* Fecha::cadena() const
 {
     locale::global(locale("es_ES.UTF-8"));
     //setlocale(LC_TIME,"spanish");
     tm* F = localtime(&now);
     F->tm_mday = d;
     F->tm_mon = m - 1;
-    F->tm_yday = a - 1900;
+    F->tm_year = a - 1900;
     static char buffer[80];
     mktime(F);
     strftime(buffer,80,"%A %d de %B de %Y",F);
@@ -169,6 +167,13 @@ try
     return F;
 }
 
+Fecha Fecha::operator=(const Fecha& F)
+{
+    d = F.d;
+    m = F.m;
+    a = F.a;
+    return *this;
+}
 Fecha operator ++(Fecha& F, int n)
 {
     Fecha t = F;
@@ -185,7 +190,7 @@ Fecha operator --(Fecha& F,int n)
 {
     Fecha t = F;
     F+=-1;
-    return F;
+    return t;
 }
 
 Fecha operator --(Fecha& F )
@@ -254,4 +259,19 @@ bool operator <= (const Fecha& F, const Fecha& G)
 bool operator >= (const Fecha& F, const Fecha& G)
 {
     return !(F < G);
+}
+
+ostream& operator<<(ostream& os,const Fecha& F)
+{
+    os <<  F.cadena();
+    return os;
+}
+
+std::istream& operator>>(std::istream& is, Fecha& F)
+{
+    char cadena[80];
+    is >> cadena;
+    Fecha C{cadena};
+    F = C;
+    return is;
 }
