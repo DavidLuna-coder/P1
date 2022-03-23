@@ -269,7 +269,7 @@ ostream& operator<<(ostream& os,const Fecha& F)
 
 std::istream& operator>>(std::istream& is, Fecha& F)
 {
-    char cadena[80];
+    char* cadena;
     is >> cadena;
     Fecha C{cadena};
     F = C;

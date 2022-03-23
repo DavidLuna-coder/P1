@@ -28,7 +28,7 @@ Cadena::Cadena(const Cadena& S)
     strcpy(s_,S.s_);
 }
 
-Cadena Cadena::operator= (const Cadena& S)
+Cadena& Cadena::operator= (const Cadena& S)
 {
     if (this != &S)
     {
@@ -43,7 +43,7 @@ Cadena Cadena::operator= (const Cadena& S)
     return *this;
 }
 
-Cadena Cadena::operator= (const char* S)
+Cadena& Cadena::operator= (const char* S)
 {
     if (tam_ != strlen(S))
     {
@@ -172,7 +172,7 @@ Cadena::Cadena(Cadena&& S): s_(S.s_), tam_(S.tam_)
     tam_ = 0;
 }
 
-Cadena Cadena::operator=(Cadena&& S)
+Cadena& Cadena::operator=(Cadena&& S)
 {
     if(this != &S)
     {
@@ -188,4 +188,19 @@ Cadena Cadena::operator=(Cadena&& S)
     }
 
     return *this;
+}
+
+std::ostream& operator <<(std::ostream& os, const Cadena& C)
+{
+    os << C.c_str();
+    return os;
+}
+
+std::istream& operator >>(std::istream& is, Cadena& C)
+{
+    char* s;
+    is >> s;
+    Cadena S{s};
+    C = std::move(S);
+    return is;
 }
