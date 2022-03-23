@@ -271,6 +271,11 @@ std::istream& operator>>(std::istream& is, Fecha& F)
 {
     char* cadena;
     is >> cadena;
+    if (std::sscanf(cadena,"%d/%d/%d")!=3)
+    {
+        is.setstate(ios::failbit);
+    }
+    
     Fecha C{cadena};
     F = C;
     return is;
