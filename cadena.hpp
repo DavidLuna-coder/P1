@@ -2,11 +2,13 @@
 #define _CADENA_
 
 #include <iostream>
+#include <iterator>
 class Cadena
 {
 private:
     char* s_;
     unsigned tam_;
+    
 public:
     explicit Cadena(unsigned t = 0, char c = '\0');
     Cadena(const Cadena& S);
@@ -28,6 +30,25 @@ public:
     const char* c_str() const;
 
     unsigned length() const;
+
+    //Iteradores
+    typedef char* iterator ;
+    typedef const char* const_iterator;
+    typedef std::reverse_iterator<iterator> reverse_iterator;
+    typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
+    iterator begin();
+    const_iterator begin() const;
+    iterator end();
+    const_iterator end() const;
+    const_iterator cbegin() const;
+    const_iterator cend() const;
+    reverse_iterator rbegin();
+    const_reverse_iterator rbegin() const;
+    reverse_iterator rend();
+    const_reverse_iterator rend() const;
+    const_reverse_iterator crbegin() const;
+    const_reverse_iterator crend() const;
+    
     ~Cadena()
     {
         delete[] s_;
