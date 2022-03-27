@@ -2,7 +2,7 @@
 #include <cstring>
 #include <stdexcept>
 
-Cadena::giunsigned t, char c)
+Cadena::Cadena(unsigned t, char c)
 {
     tam_ = t;
     s_ = new char[t+1];
