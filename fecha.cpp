@@ -2,6 +2,7 @@
 #include <ctime>
 #include <locale>
 #include <iostream>
+#include <cstring>
 //std::locale("es_ES.UTF-8");
 using namespace std;
 time_t now = time(nullptr);
@@ -144,6 +145,17 @@ const char* Fecha::cadena() const
     strftime(buffer,80,"%A %d de %B de %Y",F);
     return buffer;
 }
+
+Fecha& Fecha::operator=(const Fecha& F)
+{
+    if(this != &F)
+    {
+        d = F.d;
+        m = F.m;
+        a = F.a;
+    }
+    return *this;
+}
 //Operadores
 Fecha operator += (Fecha& F, int n)
 {
@@ -167,13 +179,6 @@ try
     return F;
 }
 
-Fecha Fecha::operator=(const Fecha& F)
-{
-    d = F.d;
-    m = F.m;
-    a = F.a;
-    return *this;
-}
 Fecha operator ++(Fecha& F, int n)
 {
     Fecha t = F;
@@ -271,12 +276,19 @@ std::istream& operator>>(std::istream& is, Fecha& F)
 {
     char* cadena;
     is >> cadena;
-    if (std::sscanf(cadena,"%d/%d/%d")!=3)
+    int dia = 0;
+    int mes = 0;
+    int anno = 0;
+    if (std::sscanf(cadena,"%d/%d/%d",&dia,&mes,&anno) != 3)
     {
         is.setstate(ios::failbit);
     }
+    else
+    {
+        Fecha C{cadena};
+        F = C;
+    }
     
-    Fecha C{cadena};
-    F = C;
+    
     return is;
 }
