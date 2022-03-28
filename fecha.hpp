@@ -21,19 +21,18 @@ public:
     explicit Fecha( unsigned dia = 0, unsigned mes = 0, unsigned anno = 0);
     Fecha(const Fecha& F);
     Fecha(const char* f);
-
+    Fecha& operator=(const Fecha& F);
     //Observadores
     int dia() const;
     int mes() const;
     int anno() const;
 
-    Fecha operator=(const Fecha& F);
+    
     const char* cadena() const;
     //Operadores amigos
     friend Fecha operator += (Fecha&, int n);
     friend bool operator == (const Fecha& F, const Fecha& G);
     friend bool operator < (const Fecha& F,const Fecha& G); 
-    ~Fecha(){};
 
 private:
 
