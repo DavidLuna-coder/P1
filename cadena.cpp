@@ -176,10 +176,7 @@ Cadena& Cadena::operator=(Cadena&& S)
 {
     if(this != &S)
     {
-        if(tam_ != S.tam_)
-        {
-            delete[] s_;
-        }
+        delete[] s_;
 
         tam_ = S.tam_;
         s_ = S.s_;
@@ -201,7 +198,7 @@ std::istream& operator >>(std::istream& is, Cadena& C)
     char s[80];
     is >> s;
     Cadena S{s};
-    C = S;
+    C = std::move(S);
     return is;
 }
 
