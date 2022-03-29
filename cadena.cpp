@@ -198,10 +198,10 @@ std::ostream& operator <<(std::ostream& os, const Cadena& C)
 
 std::istream& operator >>(std::istream& is, Cadena& C)
 {
-    char* s;
+    char s[80];
     is >> s;
     Cadena S{s};
-    C = std::move(S);
+    C = S;
     return is;
 }
 
