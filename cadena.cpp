@@ -60,7 +60,7 @@ const char* Cadena::c_str() const
     return s_;
 }
 
-Cadena& Cadena::operator+=(Cadena& C)
+Cadena& Cadena::operator+=(const Cadena& C)
 {
     unsigned tam = this->tam_ + C.tam_;
     Cadena Cad{tam};
@@ -198,9 +198,71 @@ std::ostream& operator <<(std::ostream& os, const Cadena& C)
 
 std::istream& operator >>(std::istream& is, Cadena& C)
 {
-    char* s;
+    char s[80];
     is >> s;
     Cadena S{s};
-    C = std::move(S);
+    C = S;
     return is;
+}
+
+//Iteradores
+
+Cadena::iterator Cadena::begin() 
+{
+    return s_;
+}
+
+Cadena::const_iterator Cadena::begin() const
+{
+    return cbegin();
+}
+
+Cadena::iterator Cadena::end()
+{
+    return s_ + length() + 1;
+}
+
+Cadena::const_iterator Cadena::end() const
+{
+    return cend();
+}
+
+Cadena::const_iterator Cadena::cbegin() const
+{
+    return s_;
+}
+
+Cadena::const_iterator Cadena::cend() const
+{
+    return s_ + length() + 1;
+}
+
+Cadena::reverse_iterator Cadena::rbegin()
+{
+    return reverse_iterator(end());
+}
+
+Cadena::reverse_iterator Cadena::rend()
+{
+    return reverse_iterator(begin());
+}
+
+Cadena::const_reverse_iterator Cadena::crbegin() const
+{
+    return const_reverse_iterator(cend());
+}
+
+Cadena::const_reverse_iterator Cadena::crend() const
+{
+    return const_reverse_iterator(cbegin());
+}
+
+Cadena::const_reverse_iterator Cadena::rbegin() const
+{
+    return crbegin();
+}
+
+Cadena::const_reverse_iterator Cadena::rend() const
+{
+    return crend();
 }
