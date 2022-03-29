@@ -60,7 +60,7 @@ const char* Cadena::c_str() const
     return s_;
 }
 
-Cadena& Cadena::operator+=(Cadena& C)
+Cadena& Cadena::operator+=(const Cadena& C)
 {
     unsigned tam = this->tam_ + C.tam_;
     Cadena Cad{tam};

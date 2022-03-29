@@ -25,7 +25,7 @@ public:
     char operator[](int) const;
     char& operator[](int n);
 
-    Cadena& operator+=(Cadena& C);   
+    Cadena& operator+=(const Cadena& C);   
     friend Cadena operator+ (Cadena& S, Cadena& C);
     const char* c_str() const;
 
@@ -61,7 +61,7 @@ bool operator < (const Cadena& S, const Cadena & C);
 bool operator > (const Cadena& S, const Cadena& C);
 bool operator <= (const Cadena& S, const Cadena& C);
 bool operator >= (const Cadena& S, const Cadena& C);
-
+bool operator != (const Cadena& S, const Cadena& C);
 std::ostream& operator <<(std::ostream& os, const Cadena& C);
 std::istream& operator >>(std::istream& is, Cadena& C);
 #endif
