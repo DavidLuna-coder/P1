@@ -26,7 +26,7 @@ public:
     char& operator[](int n);
 
     Cadena& operator+=(const Cadena& C);   
-    friend Cadena operator+ (Cadena& S, Cadena& C);
+    friend Cadena operator+ (const Cadena& S,const Cadena& C);
     const char* c_str() const;
 
     unsigned length() const;

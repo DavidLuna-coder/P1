@@ -70,7 +70,7 @@ Cadena& Cadena::operator+=(const Cadena& C)
     return *this;
 }
 
-Cadena operator+ (Cadena& S, Cadena& C)
+Cadena operator+ (const Cadena& S, const Cadena& C)
 {
     unsigned tam = S.tam_ + C.tam_;
     Cadena Cad{tam};
