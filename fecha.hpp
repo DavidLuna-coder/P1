@@ -14,8 +14,8 @@ public:
         const char* Error;
     };
     //Variables Públicas
-    const unsigned AnnoMinimo = 1902;
-    const unsigned AnnoMaximo = 2037;
+    static const unsigned AnnoMinimo = 1902;
+    static const unsigned AnnoMaximo = 2037;
 
     //Constructores
     explicit Fecha( unsigned dia = 0, unsigned mes = 0, unsigned anno = 0);
@@ -26,11 +26,11 @@ public:
     int dia() const;
     int mes() const;
     int anno() const;
-
+    //operator const char*() const;
     
     const char* cadena() const;
     //Operadores amigos
-    friend Fecha operator += (Fecha&, int n);
+    friend Fecha& operator += (Fecha&, int n);
     friend bool operator == (const Fecha& F, const Fecha& G);
     friend bool operator < (const Fecha& F,const Fecha& G); 
 
@@ -49,16 +49,20 @@ inline const char* Fecha::Invalida:: por_que() const
     return Error;
 }
 
-Fecha operator +=(Fecha&, int n);
-Fecha operator -=(Fecha&, int n);
-Fecha operator ++(Fecha&);
+Fecha& operator +=(Fecha&, int n);
+Fecha& operator -=(Fecha&, int n);
+Fecha& operator ++(Fecha&);
 Fecha operator ++(Fecha&, int);
-Fecha operator --(Fecha&);
+Fecha& operator --(Fecha&);
 Fecha operator --(Fecha&, int);
-Fecha operator +(Fecha&, int n);
-Fecha operator -(Fecha&, int n);
+Fecha operator +(const Fecha F, int n);
+Fecha operator -(const Fecha&, int n);
 bool operator == (const Fecha& F,const Fecha& G);
 bool operator < (const Fecha& F,const Fecha& G);
+bool operator > (const Fecha& F,const Fecha& G);
+bool operator<= (const Fecha& F,const Fecha& G);
+bool operator>= (const Fecha& F,const Fecha& G);
+
 bool operator != (const Fecha& F, const Fecha& G);
 std::ostream& operator<<(std::ostream& os,const Fecha& F);
 std::istream& operator>>(std::istream& is, Fecha& F);
