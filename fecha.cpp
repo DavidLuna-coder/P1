@@ -3,6 +3,7 @@
 #include <locale>
 #include <iostream>
 #include <cstring>
+#include <exception>
 // std::locale("es_ES.UTF-8");
 using namespace std;
 time_t now = time(nullptr);
@@ -11,16 +12,10 @@ tm *dt = localtime(&now);
 
 Fecha::Fecha(unsigned dia, unsigned mes, unsigned anno)
 {
-    try
-    {
-        EstablecerAnno(anno);
-        EstablecerMes(mes);
-        EstablecerDia(dia, mes, anno);
-    }
-    catch (const Fecha::Invalida &e)
-    {
-        cerr << e.por_que() << endl;
-    }
+
+    EstablecerAnno(anno);
+    EstablecerMes(mes);
+    EstablecerDia(dia, mes, anno);
 }
 
 void Fecha::EstablecerAnno(unsigned anno)
@@ -36,6 +31,10 @@ void Fecha::EstablecerAnno(unsigned anno)
     else if (anno > Fecha::AnnoMaximo)
     {
         throw Invalida("ERROR: anno mayor que el maximo establecido");
+    }
+    else if (anno < 0)
+    {
+        throw Invalida("anno no valido");
     }
     else
         a = anno;
@@ -86,7 +85,7 @@ void Fecha::EstablecerDia(unsigned dia, unsigned mes, unsigned anno)
         d = dt->tm_mday;
 }
 
-Fecha::Fecha(const Fecha &F) : d(F.d), m(F.m), a(F.a) {}
+// Fecha::Fecha(const Fecha &F) : d(F.d), m(F.m), a(F.a) {}
 
 // Constructor de conversión
 
@@ -97,22 +96,15 @@ Fecha::Fecha(const char *F)
     int anno = 0;
     int comprobar = std::sscanf(F, "%d/%d/%d", &dia, &mes, &anno);
 
-    try
+    if (comprobar != 3)
     {
-        if (comprobar != 3)
-        {
-            throw "Formato de fecha incorrecta debe ser dia/mes/anno";
-        }
-        else
-        {
-            EstablecerAnno(anno);
-            EstablecerMes(mes);
-            EstablecerDia(dia, mes, anno);
-        }
+        throw Invalida("Formato de fecha incorrecta debe ser dia/mes/anno");
     }
-    catch (const Fecha::Invalida &e)
+    else
     {
-        std::cerr << e.por_que() << '\n';
+        EstablecerAnno(anno);
+        EstablecerMes(mes);
+        EstablecerDia(dia, mes, anno);
     }
 }
 
@@ -147,7 +139,7 @@ const char *Fecha::cadena() const
     return buffer;
 }
 
-Fecha &Fecha::operator=(const Fecha &F)
+/*Fecha &Fecha::operator=(const Fecha &F)
 {
     if (this != &F)
     {
@@ -156,9 +148,9 @@ Fecha &Fecha::operator=(const Fecha &F)
         a = F.a;
     }
     return *this;
-}
+}*/
 // Operadores
-Fecha& operator+=(Fecha &F, int n)
+Fecha &operator+=(Fecha &F, int n)
 {
     tm *nuevaFecha = localtime(&now);
     nuevaFecha->tm_mday = F.d + n;
@@ -168,14 +160,8 @@ Fecha& operator+=(Fecha &F, int n)
     mktime(nuevaFecha);
     F.d = nuevaFecha->tm_mday;
     F.m = nuevaFecha->tm_mon + 1;
-    try
-    {
-        F.EstablecerAnno(nuevaFecha->tm_year + 1900);
-    }
-    catch (const Fecha::Invalida &e)
-    {
-        std::cerr << e.por_que() << '\n';
-    }
+
+    F.EstablecerAnno(nuevaFecha->tm_year + 1900);
 
     return F;
 }
@@ -187,7 +173,7 @@ Fecha operator++(Fecha &F, int n)
     return t;
 }
 
-Fecha& operator++(Fecha &F)
+Fecha &operator++(Fecha &F)
 {
     return F += 1;
 }
@@ -199,7 +185,7 @@ Fecha operator--(Fecha &F, int n)
     return t;
 }
 
-Fecha& operator--(Fecha &F)
+Fecha &operator--(Fecha &F)
 {
     return F += -1;
 }
@@ -216,7 +202,7 @@ Fecha operator-(const Fecha &F, int n)
     return t += -n;
 }
 
-Fecha& operator-=(Fecha &F, int n)
+Fecha &operator-=(Fecha &F, int n)
 {
     return F += -n;
 }
@@ -239,9 +225,10 @@ bool operator<(const Fecha &F, const Fecha &G)
         {
             flag = true;
         }
-        else if (F.d < G.d)
+        else if (F.m == G.m)
         {
-            flag = true;
+            if (F.d < G.d)
+                flag = true;
         }
     }
     return flag;

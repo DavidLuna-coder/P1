@@ -19,9 +19,9 @@ public:
 
     //Constructores
     explicit Fecha( unsigned dia = 0, unsigned mes = 0, unsigned anno = 0);
-    Fecha(const Fecha& F);
+    Fecha(const Fecha& F) = default;
     Fecha(const char* f);
-    Fecha& operator=(const Fecha& F);
+    //Fecha& operator=(const Fecha& F);
     //Observadores
     int dia() const;
     int mes() const;
