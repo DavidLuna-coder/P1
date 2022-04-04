@@ -98,7 +98,7 @@ Fecha::Fecha(const char *F)
 
     if (comprobar != 3)
     {
-        throw Invalida("Formato de fecha incorrecta debe ser dia/mes/anno");
+        throw Invalida("Formato de fecha incorrecta debe ser DD/MM/AAAA");
     }
     else
     {
@@ -214,24 +214,20 @@ bool operator==(const Fecha &F, const Fecha &G)
 
 bool operator<(const Fecha &F, const Fecha &G)
 {
-    bool flag = false;
-    if (F.a < G.a)
+    if (F.anno() < G.anno())
     {
-        flag = true;
+        return true;
     }
-    else if (F.a == G.a)
+    else if (F.anno() == G.anno())
     {
-        if (F.m < F.m)
+        if (F.mes() < G.mes())
+            return true;
+        else if (F.mes() == G.mes() && F.dia() < G.dia())
         {
-            flag = true;
-        }
-        else if (F.m == G.m)
-        {
-            if (F.d < G.d)
-                flag = true;
+            return true;
         }
     }
-    return flag;
+    return false;
 }
 
 bool operator!=(const Fecha &F, const Fecha &G)
@@ -241,7 +237,7 @@ bool operator!=(const Fecha &F, const Fecha &G)
 
 bool operator>(const Fecha &F, const Fecha &G)
 {
-    return !((F == G) || (F < G));
+    return !((F <= G));
 }
 
 bool operator<=(const Fecha &F, const Fecha &G)
@@ -261,26 +257,34 @@ bool operator>=(const Fecha &F, const Fecha &G)
 
 ostream &operator<<(ostream &os, const Fecha &F)
 {
+
     os << F.cadena();
+
     return os;
 }
 
 std::istream &operator>>(std::istream &is, Fecha &F)
 {
-    char *cadena;
+    char cadena[20];
     is >> cadena;
     int dia = 0;
     int mes = 0;
     int anno = 0;
-    if (std::sscanf(cadena, "%d/%d/%d", &dia, &mes, &anno) != 3)
+    if (strlen(cadena) > 10)
     {
         is.setstate(ios::failbit);
+        throw Fecha::Invalida("Desbordamiento en la extraccion");
     }
-    else
+    
+    try
     {
         Fecha C{cadena};
         F = C;
     }
-
+    catch (const Fecha::Invalida &e)
+    {
+        is.setstate(ios::failbit);
+        throw Fecha::Invalida("Entrada Invalida");
+    }
     return is;
 }

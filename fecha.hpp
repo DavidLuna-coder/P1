@@ -32,7 +32,7 @@ public:
     //Operadores amigos
     friend Fecha& operator += (Fecha&, int n);
     friend bool operator == (const Fecha& F, const Fecha& G);
-    friend bool operator < (const Fecha& F,const Fecha& G); 
+    //friend bool operator < (const Fecha& F,const Fecha& G); 
 
 private:
 
