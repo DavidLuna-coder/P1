@@ -57,11 +57,11 @@ private:
     unsigned tam_;
     
 public:
-    explicit Cadena(unsigned t = 0, char c = '\0');
+    explicit Cadena(unsigned t = 0, char c = ' ');
     Cadena(const Cadena& S);
     Cadena(const char* S);
     Cadena(Cadena&& S);
-    Cadena substr(int i, unsigned t) const;
+    Cadena substr(int i, int t) const;
 
     char at (int n) const;
     char& at (int n);
@@ -73,7 +73,7 @@ public:
     char& operator[](int n);
 
     Cadena& operator+=(const Cadena& C);   
-    friend Cadena operator+ (Cadena& S, Cadena& C);
+    friend Cadena operator+ (const Cadena& S,const Cadena& C);
     const char* c_str() const;
 
     unsigned length() const;

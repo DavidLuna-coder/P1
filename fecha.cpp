@@ -287,24 +287,19 @@ std::istream& operator>>(std::istream& is, Fecha& F)
 #include <locale>
 #include <iostream>
 #include <cstring>
-//std::locale("es_ES.UTF-8");
+#include <exception>
+// std::locale("es_ES.UTF-8");
 using namespace std;
 time_t now = time(nullptr);
-tm* dt = localtime(&now);
+tm *dt = localtime(&now);
 // Constructor Predeterminado
 
 Fecha::Fecha(unsigned dia, unsigned mes, unsigned anno)
 {
-    try
-    {
-        EstablecerAnno(anno);
-        EstablecerMes(mes);
-        EstablecerDia(dia, mes, anno);
-    }
-    catch (const Fecha::Invalida &e)
-    {
-        cerr << e.por_que() << endl;
-    }
+
+    EstablecerAnno(anno);
+    EstablecerMes(mes);
+    EstablecerDia(dia, mes, anno);
 }
 
 void Fecha::EstablecerAnno(unsigned anno)
@@ -320,6 +315,10 @@ void Fecha::EstablecerAnno(unsigned anno)
     else if (anno > Fecha::AnnoMaximo)
     {
         throw Invalida("ERROR: anno mayor que el maximo establecido");
+    }
+    else if (anno < 0)
+    {
+        throw Invalida("anno no valido");
     }
     else
         a = anno;
@@ -370,32 +369,26 @@ void Fecha::EstablecerDia(unsigned dia, unsigned mes, unsigned anno)
         d = dt->tm_mday;
 }
 
-Fecha::Fecha(const Fecha &F) : d(F.d), m(F.m), a(F.a) {}
+// Fecha::Fecha(const Fecha &F) : d(F.d), m(F.m), a(F.a) {}
 
-//Constructor de conversión
+// Constructor de conversión
 
-Fecha::Fecha(const char* F)
+Fecha::Fecha(const char *F)
 {
     int dia = 0;
     int mes = 0;
     int anno = 0;
-    int comprobar = std::sscanf(F,"%d/%d/%d",&dia,&mes,&anno);
+    int comprobar = std::sscanf(F, "%d/%d/%d", &dia, &mes, &anno);
 
-    try
+    if (comprobar != 3)
     {
-        if(comprobar != 3)
-        {
-            throw "Formato de fecha incorrecta debe ser dia/mes/anno";
-        } else
-        {
-            EstablecerAnno(anno);
-            EstablecerMes(mes);
-            EstablecerDia(dia,mes,anno);
-        }
+        throw Invalida("Formato de fecha incorrecta debe ser DD/MM/AAAA");
     }
-    catch(const Fecha::Invalida& e)
+    else
     {
-        std::cerr << e.por_que() << '\n';
+        EstablecerAnno(anno);
+        EstablecerMes(mes);
+        EstablecerDia(dia, mes, anno);
     }
 }
 
@@ -415,165 +408,168 @@ int Fecha::anno() const
     return a;
 }
 
-//Conversión implicita/explícita
-const char* Fecha::cadena() const
+// Conversión implicita/explícita
+const char *Fecha::cadena() const
 {
     locale::global(locale("es_ES.UTF-8"));
-    //setlocale(LC_TIME,"spanish");
-    tm* F = localtime(&now);
+    // setlocale(LC_TIME,"spanish");
+    tm *F = localtime(&now);
     F->tm_mday = d;
     F->tm_mon = m - 1;
     F->tm_year = a - 1900;
     static char buffer[80];
     mktime(F);
-    strftime(buffer,80,"%A %d de %B de %Y",F);
+    strftime(buffer, 80, "%A %d de %B de %Y", F);
     return buffer;
 }
 
-Fecha& Fecha::operator=(const Fecha& F)
+/*Fecha &Fecha::operator=(const Fecha &F)
 {
-    if(this != &F)
+    if (this != &F)
     {
         d = F.d;
         m = F.m;
         a = F.a;
     }
     return *this;
-}
-//Operadores
-Fecha operator += (Fecha& F, int n)
+}*/
+// Operadores
+Fecha &operator+=(Fecha &F, int n)
 {
-    tm* nuevaFecha = localtime(&now);
+    tm *nuevaFecha = localtime(&now);
     nuevaFecha->tm_mday = F.d + n;
-    nuevaFecha->tm_mon = F.m - 1 ;
+    nuevaFecha->tm_mon = F.m - 1;
     nuevaFecha->tm_year = F.a - 1900;
 
     mktime(nuevaFecha);
     F.d = nuevaFecha->tm_mday;
     F.m = nuevaFecha->tm_mon + 1;
-try
-    {
-        F.EstablecerAnno(nuevaFecha->tm_year + 1900); 
-    }
-    catch(const Fecha::Invalida& e)
-    {
-        std::cerr << e.por_que() << '\n';
-    }
+
+    F.EstablecerAnno(nuevaFecha->tm_year + 1900);
 
     return F;
 }
 
-Fecha operator ++(Fecha& F, int n)
+Fecha operator++(Fecha &F, int n)
 {
     Fecha t = F;
     F += 1;
     return t;
 }
 
-Fecha operator ++(Fecha& F)
+Fecha &operator++(Fecha &F)
 {
-    return F+=1;
+    return F += 1;
 }
 
-Fecha operator --(Fecha& F,int n)
+Fecha operator--(Fecha &F, int n)
 {
     Fecha t = F;
-    F+=-1;
+    F += -1;
     return t;
 }
 
-Fecha operator --(Fecha& F )
+Fecha &operator--(Fecha &F)
 {
-    return F+=-1;
+    return F += -1;
 }
 
-Fecha operator +(Fecha& F, int n)
+Fecha operator+(const Fecha F, int n)
 {
     Fecha t = F;
     return t += n;
 }
 
-Fecha operator -(Fecha& F, int n)
+Fecha operator-(const Fecha &F, int n)
 {
     Fecha t = F;
     return t += -n;
 }
 
-Fecha operator -=(Fecha& F,int n)
+Fecha &operator-=(Fecha &F, int n)
 {
     return F += -n;
 }
 
-bool operator == (const Fecha& F, const Fecha& G)
+bool operator==(const Fecha &F, const Fecha &G)
 {
-    return (F.d ==  G.d && F.m == G.m && F.a == G.a);
+    return (F.d == G.d && F.m == G.m && F.a == G.a);
 }
 
-bool operator < (const Fecha& F,const Fecha& G)
+bool operator<(const Fecha &F, const Fecha &G)
 {
-    bool flag = false;
-    if (F.a < G.a)
+    if (F.anno() < G.anno())
     {
-        flag = true;
+        return true;
     }
-    else if (F.a == G.a)
+    else if (F.anno() == G.anno())
     {
-        if (F.m < F.m)
+        if (F.mes() < G.mes())
+            return true;
+        else if (F.mes() == G.mes() && F.dia() < G.dia())
         {
-            flag = true;
-        }
-        else if (F.d < G.d)
-        {
-            flag = true;
+            return true;
         }
     }
-    return flag;
+    return false;
 }
 
-bool operator != (const Fecha& F, const Fecha& G)
+bool operator!=(const Fecha &F, const Fecha &G)
 {
     return !(F == G);
 }
 
-bool operator > (const Fecha& F, const Fecha& G)
+bool operator>(const Fecha &F, const Fecha &G)
 {
-    return !((F == G) || (F < G));
+    return !((F <= G));
 }
 
-bool operator <= (const Fecha& F, const Fecha& G)
+bool operator<=(const Fecha &F, const Fecha &G)
 {
     return ((F == G) || (F < G));
 }
 
-bool operator >= (const Fecha& F, const Fecha& G)
+bool operator>=(const Fecha &F, const Fecha &G)
 {
     return !(F < G);
 }
 
-ostream& operator<<(ostream& os,const Fecha& F)
+/*Fecha::operator const char*() const
 {
-    os <<  F.cadena();
+    return cadena();
+}*/
+
+ostream &operator<<(ostream &os, const Fecha &F)
+{
+
+    os << F.cadena();
+
     return os;
 }
 
-std::istream& operator>>(std::istream& is, Fecha& F)
+std::istream &operator>>(std::istream &is, Fecha &F)
 {
-    char* cadena;
+    char cadena[20];
     is >> cadena;
     int dia = 0;
     int mes = 0;
     int anno = 0;
-    if (std::sscanf(cadena,"%d/%d/%d",&dia,&mes,&anno) != 3)
+    if (strlen(cadena) > 10)
     {
         is.setstate(ios::failbit);
+        throw Fecha::Invalida("Desbordamiento en la extraccion");
     }
-    else
+    
+    try
     {
         Fecha C{cadena};
         F = C;
     }
-    
-    
+    catch (const Fecha::Invalida &e)
+    {
+        is.setstate(ios::failbit);
+        throw Fecha::Invalida("Entrada Invalida");
+    }
     return is;
 }
 >>>>>>> develop
