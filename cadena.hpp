@@ -10,7 +10,7 @@ private:
     unsigned tam_;
     
 public:
-    explicit Cadena(unsigned t = 0, char c = '\0');
+    explicit Cadena(unsigned t = 0, char c = ' ');
     Cadena(const Cadena& S);
     Cadena(const char* S);
     Cadena(Cadena&& S);

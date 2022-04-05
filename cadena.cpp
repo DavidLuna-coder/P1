@@ -128,7 +128,7 @@ bool operator != (const Cadena& S, const Cadena& C)
 
 bool operator < (const Cadena& S, const Cadena& C)
 {
-    if(strcmp(S.c_str(),C.c_str()) > 0)
+    if(strcmp(S.c_str(),C.c_str()) < 0)
         return true;
     else
         return false;
@@ -168,8 +168,8 @@ Cadena Cadena::substr(int i, unsigned t) const
 
 Cadena::Cadena(Cadena&& S): s_(S.s_), tam_(S.tam_)
 {
-    S.s_ == nullptr;
-    tam_ = 0;
+    S.s_ = nullptr;
+    S.tam_ = 0;
 }
 
 Cadena& Cadena::operator=(Cadena&& S)
