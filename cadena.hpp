@@ -14,7 +14,7 @@ public:
     Cadena(const Cadena& S);
     Cadena(const char* S);
     Cadena(Cadena&& S);
-    Cadena substr(int i, unsigned t) const;
+    Cadena substr(int i, int t) const;
 
     char at (int n) const;
     char& at (int n);
